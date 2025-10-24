@@ -1,0 +1,126 @@
+package myPackage;
+
+public class Main {
+    public static void main(String[] args) {
+
+        ShapeManager manager = new ShapeManager();
+
+        manager.addShape(new Circle(5));
+        manager.addShape(new Rectangle(10, 6));
+        manager.addShape(new Circle(3));
+
+        manager.displayAllShapes();
+
+        manager.filterLargeShapes(50);
+
+        Drawable unknownShape = new Drawable() {
+            @Override
+            public void draw() {
+                System.out.println("Drawing an unknown shape anonymously.");
+            }
+        };
+        unknownShape.draw();
+
+        MessagePrinter printer = msg -> System.out.println(msg);
+        printer.printMessage("All shapes have been processed successfully!");
+    }
+}
+
+package myPackage;
+
+abstract class Shape {
+    abstract double getArea();
+
+    void displayShape() {
+        System.out.println("This is a shape.");
+    }
+}
+
+package myPackage;
+
+class Circle extends Shape implements Drawable {
+    private double radius;
+
+    Circle(double radius) {
+        this.radius = radius;
+    }
+
+    @Override
+    double getArea() {
+        return Math.PI * radius * radius;
+    }
+
+    @Override
+    public void draw() {
+        System.out.println("Drawing a circle using a compass.");
+    }
+}
+
+package myPackage;
+
+class Rectangle extends Shape implements Drawable {
+    private double length;
+    private double width;
+
+    Rectangle(double length, double width) {
+        this.length = length;
+        this.width = width;
+    }
+
+    @Override
+    double getArea() {
+        return length * width;
+    }
+
+    @Override
+    public void draw() {
+        System.out.println("Drawing a rectangle using a ruler.");
+    }
+}
+
+package myPackage;
+
+interface Drawable {
+    void draw();
+}
+
+package myPackage;
+
+@FunctionalInterface
+interface MessagePrinter {
+    void printMessage(String msg);
+}
+
+package myPackage;
+
+import java.util.ArrayList;
+
+class ShapeManager {
+    private ArrayList<Shape> shapes = new ArrayList<>();
+
+    void addShape(Shape s) {
+        shapes.add(s);
+    }
+
+    void displayAllShapes() {
+        for (Shape s : shapes) {
+            s.displayShape();
+
+            if (s instanceof Drawable) {
+                ((Drawable) s).draw();
+            }
+
+            System.out.printf("Area: %.1f%n%n", s.getArea());
+        }
+    }
+
+    void filterLargeShapes(double minArea) {
+        System.out.println("--- Shapes with area greater than " + minArea + " ---");
+        for (Shape s : shapes) {
+            if (s.getArea() > minArea) {
+                System.out.printf("%s (%.1f)%n", s.getClass().getSimpleName(), s.getArea());
+            }
+        }
+        System.out.println();
+    }
+}
